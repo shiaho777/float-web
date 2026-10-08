@@ -1,0 +1,45 @@
+name: Build static site
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "components/**"
+      - "lib/**"
+      - "public/**"
+      - "custom-apps/**"
+      - "data/**"
+      - "next.config.mjs"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/build-cf-pages.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: "--max-old-space-size=6144"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Build static export
+        run: npm run build
+
+      - name: Upload static artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: static-site
+          path: out
+          if-no-files-found: error
+          retention-days: 3
