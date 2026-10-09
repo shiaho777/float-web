@@ -27,6 +27,7 @@ import { stripStateAndInnerForPrompt } from "./prompt-sanitizer";
 import { renderUserNameMacro } from "./user-macro";
 import { loadChatOfflineProjectionEntries } from "./chat-offline-storage";
 import { loadCheckPhoneProjectionEntries } from "./checkphone-storage";
+import { loadAbcProjectionEntries } from "./abc-listen-memory";
 import { formatShoppingPaymentRequestHistory } from "./shopping-payment-request";
 import { loadCustomAppTimelineEntries } from "./custom-app-storage";
 import {
@@ -50,8 +51,8 @@ function formatPhotoDirectiveForPrompt(msg: ChatMessage): string {
 
 export type NativeTimelineEntry = {
     id: string;
-    sourceApp: "chat" | "moments" | "story" | "vn" | "map" | "game" | "diary" | "xiaohongshu" | "interview_magazine" | "cocreate" | "checkphone" | "custom_app";
-    sourceDetail?: "direct" | "group" | "system" | "story" | "chat_offline" | "game" | "diary_entry" | "notewall" | "xiaohongshu" | "black_market_theater" | "interview_issue" | "interview_shared_issue" | "cocreate_project" | "checkphone" | "custom_app_event"; // chat sub-type: 1:1 vs group chat vs system note
+    sourceApp: "chat" | "moments" | "story" | "vn" | "map" | "game" | "diary" | "xiaohongshu" | "interview_magazine" | "cocreate" | "checkphone" | "custom_app" | "music";
+    sourceDetail?: "direct" | "group" | "system" | "story" | "chat_offline" | "game" | "diary_entry" | "notewall" | "xiaohongshu" | "black_market_theater" | "interview_issue" | "interview_shared_issue" | "cocreate_project" | "checkphone" | "custom_app_event" | "abc"; // chat sub-type: 1:1 vs group chat vs system note
     authorType?: "user" | "character" | "npc"; // who authored this entry
     postAuthorType?: "user" | "character"; // for moments: who owns the parent post
     sessionId?: string;
@@ -764,13 +765,32 @@ export function loadNativeTimeline(
         });
     }
 
+    const abcEntries = loadAbcProjectionEntries(characterId, {
+        afterTimestamp: options?.afterTimestamp,
+    });
+    for (const abcEntry of abcEntries) {
+        entries.push({
+            id: abcEntry.id,
+            sourceApp: "music",
+            sourceDetail: "abc",
+            authorType: "character",
+            timestamp: abcEntry.timestamp,
+            content: formatStoredPromptEventContent(renderCharacterMacro(renderUserNameMacro(abcEntry.content, userName), charName), {
+                label: "音乐",
+                timestamp: abcEntry.timestamp,
+                timeAware,
+                timestampOptions,
+            }),
+        });
+    }
+
     // Sort by timestamp ascending
     entries.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
     return entries;
 }
 
 // Fixed order — lower = further from LLM output (appears higher in prompt)
-const FEATURE_ORDER: Record<string, number> = { map: 0, game: 0.5, moments: 1, xiaohongshu: 1.5, checkphone: 1.7, story: 2, vn: 2, theater: 2.2, interview: 2.35, cocreate: 2.4, diary_entry: 2.45, notewall: 2.5, custom_app: 2.6, group_chat: 3, chat: 4 };
+const FEATURE_ORDER: Record<string, number> = { map: 0, game: 0.5, moments: 1, xiaohongshu: 1.5, checkphone: 1.7, story: 2, vn: 2, theater: 2.2, music: 2.3, interview: 2.35, cocreate: 2.4, diary_entry: 2.45, notewall: 2.5, custom_app: 2.6, group_chat: 3, chat: 4 };
 // Map appId → XML tag name for the "current feature" wrapper
 const FEATURE_TAG: Record<string, string> = {
     chat: "recent_chat",
@@ -785,6 +805,7 @@ const FEATURE_TAG: Record<string, string> = {
     checkphone: "recent_checkphone",
     interview_magazine: "recent_interview",
     cocreate: "recent_cocreate",
+    music: "recent_music",
 };
 
 function getFeatureTag(appId: string): string {
@@ -1012,6 +1033,11 @@ export function prepareShortTermContext(
     const cocreateEntries = timeline.filter(e => e.sourceApp === "cocreate");
     if (cocreateEntries.length > 0) {
         raw.push({ tag: "recent_cocreate", order: FEATURE_ORDER.cocreate, entries: cocreateEntries });
+    }
+
+    const musicEntries = timeline.filter(e => e.sourceApp === "music");
+    if (musicEntries.length > 0) {
+        raw.push({ tag: "recent_music", order: FEATURE_ORDER.music, entries: musicEntries });
     }
 
     const customAppEntries = timeline.filter(e => e.sourceApp === "custom_app");
@@ -1272,6 +1298,11 @@ export function prepareGroupShortTermContext(
         raw.push({ tag: "recent_cocreate", order: FEATURE_ORDER.cocreate, entries: cocreateEntries });
     }
 
+    const musicEntries = timeline.filter(e => e.sourceApp === "music");
+    if (musicEntries.length > 0) {
+        raw.push({ tag: "recent_music", order: FEATURE_ORDER.music, entries: musicEntries });
+    }
+
     const customAppEntries = timeline.filter(e => e.sourceApp === "custom_app");
     if (customAppEntries.length > 0) {
         raw.push({ tag: "recent_custom_app", order: FEATURE_ORDER.custom_app, entries: customAppEntries });
@@ -1356,6 +1387,7 @@ export function prepareGroupShortTermContext(
                 timestamp: item.timestamp,
                 sourceApp: entry.sourceApp,
                 sourceTag: entry.sourceDetail === "group" ? "recent_group_chat" : (
+                    entry.sourceApp === "music" ? "recent_music" :
                     entry.sourceApp === "moments" ? "recent_moments" :
                         entry.sourceApp === "map" ? "recent_game" :
                             entry.sourceApp === "game" ? "recent_game" :

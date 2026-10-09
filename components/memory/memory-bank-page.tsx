@@ -96,6 +96,7 @@ const MEMORY_SOURCE_OPTIONS: Array<{ key: MemorySourceKey; label: string }> = [
     { key: "vn", label: "漫卷" },
     { key: "adventure", label: "地图冒险" },
     { key: "custom_app", label: "自定义应用" },
+    { key: "music", label: "音乐" },
 ];
 
 type MemoryEditorState = {

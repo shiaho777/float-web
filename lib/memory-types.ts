@@ -95,6 +95,7 @@ export type MemoryConfig = {
         vn?: boolean;
         adventure?: boolean;
         custom_app?: boolean;
+        music?: boolean;
     };
 };
 
@@ -234,5 +235,6 @@ export const DEFAULT_MEMORY_CONFIG: MemoryConfig = {
         vn: true,
         adventure: true,
         custom_app: true,
+        music: true,
     },
 };

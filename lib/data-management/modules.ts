@@ -187,6 +187,7 @@ const PRIMARY_DATA_MODULES: DataModuleDefinition[] = [
           "note_wall_events_",
           "ai_phone_interview_magazine_events_",
           "ai_phone_cocreate_events_",
+          "ai_phone_abc_events_",
         ],
       },
       {
@@ -235,6 +236,7 @@ const PRIMARY_DATA_MODULES: DataModuleDefinition[] = [
       { type: "indexeddb", dbName: "reading-raw-files", label: "阅读原始文件" },
       { type: "indexeddb", dbName: "reading-appearance-assets", label: "阅读外观素材" },
       { type: "indexeddb", dbName: "ai_phone_music_db_v1", label: "本地音乐" },
+      { type: "indexeddb", dbName: "ai_phone_abc_scores_v1", label: "ABC 乐谱" },
       {
         type: "kv",
         label: "内容应用配置与缓存",
@@ -270,6 +272,7 @@ const PRIMARY_DATA_MODULES: DataModuleDefinition[] = [
           "reading-import-diagnostic-v1",
           "reading_import_diag_v1",
           "ai_phone_music_sync_v1",
+          "abc_studio_seeded_v1",
           "ai_phone_custom_apps_v1",
           "ai_phone_custom_app_icon_styles_v1",
           "ai_phone_custom_app_notifications_v1",
