@@ -7,6 +7,7 @@ import { getAudioBlob, markTrackPlayed } from "./music-storage";
 import { findPlayableMatch, getNeteaseLyrics, getNeteasePlayUrl, getNeteasePlayInfo, getNeteaseSongDetail } from "./music-service";
 import { kvGet, kvSet, registerKvMigration } from "./kv-db";
 import { registerMusicControlBridge } from "./music-control-bridge";
+import { requestAbcPlayback } from "./abc-playback-bridge";
 
 // ── Types ──
 
@@ -360,6 +361,10 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     }, [playTrack, playUrl]);
 
     const playByQuery = useCallback(async (query: string, artist?: string): Promise<{ ok: boolean; message: string; track?: MusicTrack }> => {
+        const score = await requestAbcPlayback(query, artist);
+        if (score?.ok) {
+            return { ok: true, message: `正在播放《${score.title || query}》` };
+        }
         const found = await findPlayableMatch(query, artist);
         if (!found) return { ok: false, message: "没有找到可播放的音乐" };
         const { result, playUrl: onlineUrl } = found;

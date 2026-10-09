@@ -1,0 +1,400 @@
+/* Workspace frame. Geometry follows dsh AppFrame: sidebar 56–420, default 280,
+   right column first opened at 360px and capped by the viewport. Tokens are --dsw-*. */
+
+html:has(.harness-root),
+body:has(.harness-root) {
+  height: 100%;
+  background: var(--dsw-alias-bg-base);
+}
+
+.app-root.harness-root {
+  width: 100%;
+  max-width: none;
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: var(--dsw-alias-bg-base);
+  color: var(--dsw-alias-label-primary);
+  font-family: var(--dsw-font-family);
+}
+
+.harness-boot {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: var(--dsw-alias-label-secondary, var(--dsw-alias-label-primary));
+  letter-spacing: 0.08em;
+  font-family: var(--dsw-font-family-brand, var(--dsw-font-family));
+}
+
+.harness-frame {
+  display: grid;
+  grid-template-columns: var(--harness-sidebar, 280px) minmax(0, 1fr) var(--harness-right, 0px);
+  height: 100%;
+  min-height: 0;
+  background: var(--dsw-alias-bg-base);
+}
+
+.harness-frame[data-collapsed="1"] {
+  --harness-sidebar: 56px;
+}
+
+.harness-sidebar {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--dsw-specific-sidebar-fill);
+  border-right: 0.5px solid var(--dsw-alias-border-l3);
+  overflow: hidden;
+  color: var(--dsw-alias-label-primary);
+}
+
+.harness-side-head,
+.harness-new-row,
+.harness-side-search,
+.harness-side-groups,
+.harness-sessions,
+.harness-foot {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.harness-side-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 52px;
+  padding-top: 8px;
+  flex: none;
+}
+
+.harness-brand {
+  font-family: var(--dsw-font-family-brand, var(--dsw-font-family));
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  font-size: 15px;
+  flex: 1;
+  min-width: 0;
+}
+
+.harness-new-row {
+  flex: none;
+  padding-bottom: 8px;
+}
+
+.harness-new {
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.harness-side-search {
+  flex: none;
+  padding-bottom: 8px;
+}
+
+.harness-side-search input {
+  width: 100%;
+}
+
+.harness-sessions {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: 8px;
+}
+
+.harness-sessions[data-empty="1"] {
+  flex: none;
+}
+
+.harness-session,
+.harness-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-radius: var(--dsw-radius-sm);
+  background: transparent;
+  color: var(--dsw-alias-label-primary);
+  padding: 6px 8px;
+  cursor: pointer;
+  font: inherit;
+  min-height: 32px;
+}
+
+.harness-session {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.harness-session[data-active="1"],
+.harness-nav-item[data-active="1"] {
+  background: var(--dsw-specific-sidebar-nav-item-active);
+}
+
+.harness-session:hover,
+.harness-nav-item:hover {
+  background: var(--dsw-specific-sidebar-nav-item-hover);
+}
+
+.harness-session-title,
+.harness-nav-label {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.harness-session-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+}
+
+.harness-session-title > span:first-of-type,
+.harness-nav-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.harness-session-title > span:first-of-type {
+  flex: 1;
+  min-width: 0;
+}
+
+.harness-session-preview,
+.harness-group-label {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--dsw-alias-label-tertiary, var(--dsw-alias-label-secondary));
+}
+
+.harness-session-preview {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.harness-nav-icon {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  flex: none;
+  color: var(--dsw-alias-label-secondary);
+}
+
+.harness-nav-item[data-active="1"] .harness-nav-icon {
+  color: var(--dsw-alias-label-primary);
+}
+
+.harness-group-label {
+  padding: 12px 8px 4px;
+}
+
+.harness-side-groups {
+  border-top: 0.5px solid var(--dsw-alias-border-l3);
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding-bottom: 8px;
+}
+
+.harness-foot {
+  flex: none;
+  border-top: 0.5px solid var(--dsw-alias-border-l3);
+  padding-top: 8px;
+  padding-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.harness-center {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--dsw-alias-bg-base);
+}
+
+.harness-stage {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  --page-header-safe-top: 0px;
+}
+
+.harness-stage > .harness-pane {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--dsw-alias-bg-base);
+}
+
+.harness-stage > .harness-pane[hidden] {
+  display: none;
+}
+
+.harness-pane > * {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.harness-pane button[aria-label="返回桌面"] {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.harness-empty {
+  margin: auto;
+  max-width: 420px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--dsw-alias-label-secondary);
+  padding: 24px;
+}
+
+.harness-page {
+  height: 100%;
+  overflow: auto;
+  padding: 28px 32px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  max-width: 720px;
+}
+
+.harness-page h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.harness-page p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--dsw-alias-label-secondary);
+}
+
+.harness-page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.harness-right {
+  min-width: 0;
+  overflow: auto;
+  border-left: 0.5px solid var(--dsw-alias-border-l3);
+  background: var(--dsw-alias-bg-base);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.harness-right-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.harness-right h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.harness-right-tags,
+.harness-right-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.harness-right p,
+.harness-meta {
+  margin: 0;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--dsw-alias-label-secondary);
+}
+
+.harness-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: min(420px, 50vh);
+  overflow: auto;
+}
+
+.harness-frame[data-collapsed="1"] .wide-only {
+  display: none;
+}
+
+.harness-frame[data-collapsed="1"] .harness-side-head,
+.harness-frame[data-collapsed="1"] .harness-new-row,
+.harness-frame[data-collapsed="1"] .harness-foot,
+.harness-frame[data-collapsed="1"] .harness-side-groups {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.harness-frame[data-collapsed="1"] .harness-nav-item,
+.harness-frame[data-collapsed="1"] .harness-new {
+  justify-content: center;
+  width: 36px;
+  padding-inline: 0;
+}
+
+@media (max-width: 1024px) {
+  .harness-frame {
+    --harness-sidebar: 56px;
+    --harness-right: 0px !important;
+  }
+
+  .harness-right {
+    display: none;
+  }
+
+  .harness-frame .wide-only {
+    display: none;
+  }
+
+  .harness-side-head,
+  .harness-new-row,
+  .harness-foot,
+  .harness-side-groups {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .harness-nav-item,
+  .harness-new {
+    justify-content: center;
+    width: 36px;
+    padding-inline: 0;
+  }
+}

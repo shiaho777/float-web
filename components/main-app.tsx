@@ -6,7 +6,7 @@ import { ArrowRight } from "lucide-react";
 
 import { MediaMaintenanceScheduler } from "@/components/media-maintenance-scheduler";
 import { MemoryConsolidationScheduler } from "@/components/memory-consolidation-scheduler";
-import { DesktopShell } from "./desktop-shell";
+import { HarnessApp } from "./harness/HarnessApp";
 
 import { SplashAnimation } from "./splash-animation";
 import { MusicProvider } from "@/lib/music-context";
@@ -280,15 +280,10 @@ export function MainApp() {
     };
   }, []);
 
-  return !splashDismissed ? (
-    <SplashScreen ready={hydrated} onEnter={() => setSplashDismissed(true)} />
-  ) : (
-    <main className="app-root">
+  return (
+    <main className="app-root harness-root">
       <MusicProvider>
-        <DesktopShell
-          initialThemeProfile={preparedDesktopTheme?.profile}
-          initialThemeAssets={preparedDesktopTheme?.assets}
-        />
+        {hydrated ? <HarnessApp /> : <div className="harness-boot">float</div>}
         <MediaMaintenanceScheduler />
         <MemoryConsolidationScheduler />
       </MusicProvider>

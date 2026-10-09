@@ -80,7 +80,7 @@ type ParsedProjection = {
     type: "projection";
     id: string;
     timestamp: string;
-    source: "story" | "vn" | "map" | "game" | "diary" | "xiaohongshu" | "interview_magazine" | "cocreate" | "checkphone" | "custom_app" | "chat_offline";
+    source: "story" | "vn" | "map" | "game" | "diary" | "xiaohongshu" | "interview_magazine" | "cocreate" | "checkphone" | "custom_app" | "chat_offline" | "music";
     label: string;
     message: string;
 };
@@ -171,6 +171,18 @@ function parseEntry(evt: NativeTimelineEntry, userName: string): ParsedEntry | n
             timestamp: evt.timestamp,
             source: "custom_app",
             label: evt.customAppLabel || evt.customAppName || "APP",
+            message: stripped || content,
+        };
+    }
+
+    if (evt.sourceApp === "music") {
+        const stripped = content.replace(/^\[音乐(?: [^\]]+)?\]\s*/, "");
+        return {
+            type: "projection",
+            id: evt.id,
+            timestamp: evt.timestamp,
+            source: "music",
+            label: "音乐",
             message: stripped || content,
         };
     }
